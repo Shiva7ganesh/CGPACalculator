@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGPA Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>CGPA Calculator</h1>
+        <form id="cgpaForm">
+            <label for="roll">Enter Roll Number:</label>
+            <input type="text" id="roll" placeholder="e.g. 22R01A0501" required>
+            <button type="submit">Calculate</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('cgpaForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const roll = document.getElementById('roll').value;
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = "<p>Fetching results...</p>";
+
+            const response = await fetch('/calculate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ roll })
+            });
+
+            const data = await response.json();
+            if (data.error) {
+                resultDiv.innerHTML = `<p class="error">${data.error}</p>`;
+            } else {
+                let semHTML = '<div class="results">';
+                for (const [sem, sgpa] of Object.entries(data.semResults)) {
+                    semHTML += `<div class="semester"><strong>${sem}</strong>: ${sgpa}</div>`;
+                }
+                semHTML += `</div><h2>CGPA: ${data.cgpa}</h2>`;
+                resultDiv.innerHTML = semHTML;
+            }
+        });
+    </script>
+</body>
+
+</html>
