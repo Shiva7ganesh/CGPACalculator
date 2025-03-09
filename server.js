@@ -2,10 +2,12 @@ const express = require('express');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
@@ -18,6 +20,7 @@ const SEMESTERS = {
     "Semester 4": "49",
     "Semester 5": "65"
 };
+
 async function fetchSGPA(roll, resultCode) {
     try {
         const params = new URLSearchParams({ hallticket: roll, result: resultCode });
@@ -30,7 +33,7 @@ async function fetchSGPA(roll, resultCode) {
     }
 }
 
-app.post('/calculate', async (req, res) => {
+app.post('/api/calculate', async (req, res) => {
     const roll = req.body.roll;
     if (!roll) return res.status(400).json({ error: "Roll number required" });
 
@@ -54,4 +57,4 @@ app.post('/calculate', async (req, res) => {
     res.json({ roll, semResults, cgpa });
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+module.exports = app;
