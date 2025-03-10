@@ -39,6 +39,37 @@
     </div>
 
     <script>
+        function getInitials(name) {
+            return name
+                .split(' ')
+                .map(word => word[0])
+                .join('')
+                .toUpperCase();
+        }
+
+        function createInitialsAvatar(name, size = 150) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+
+            // Draw circle background
+            ctx.fillStyle = '#1a73e8';
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Draw text
+            const initials = getInitials(name);
+            ctx.fillStyle = 'white';
+            ctx.font = `${size / 2}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(initials, size / 2, size / 2);
+
+            return canvas.toDataURL();
+        }
+
         document.getElementById('cgpaForm').addEventListener('submit', async function (event) {
             event.preventDefault();
             const roll = document.getElementById('roll').value;
@@ -58,9 +89,25 @@
                     resultDiv.innerHTML = `<p class="error">${data.error}</p>`;
                 } else {
                     let resultHTML = `<div class="student-info">`;
-                    if (data.photoUrl) {
-                        resultHTML += `<img src="${data.photoUrl}" alt="Student Photo" class="student-photo">`;
-                    }
+
+                    // Try to load the photo through our proxy
+                    const img = document.createElement('img');
+                    img.className = 'student-photo';
+                    img.alt = 'Student Photo';
+
+                    // Set up error handling before setting src
+                    img.onerror = () => {
+                        if (data.studentName) {
+                            img.src = createInitialsAvatar(data.studentName);
+                        } else {
+                            img.src = '/default-avatar.png';
+                        }
+                    };
+
+                    // Try loading through proxy
+                    img.src = `/api/student-photo/${roll}`;
+                    resultHTML += img.outerHTML;
+
                     if (data.studentName) {
                         resultHTML += `<h3 class="student-name">${data.studentName}</h3>`;
                     }
