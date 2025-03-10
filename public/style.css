@@ -30,6 +30,37 @@ h1 {
     margin-bottom: 20px;
 }
 
+.radio-group ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.radio-group li {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.radio-group input[type="radio"] {
+    margin: 0;
+    cursor: pointer;
+}
+
+.radio-group label {
+    margin: 0;
+    cursor: pointer;
+}
+
+.radio-label {
+    display: block;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: bold;
+}
+
 label {
     display: block;
     margin-bottom: 8px;
@@ -73,7 +104,7 @@ button:hover {
 
 /* Result Box */
 .results {
-    margin-top: 30px;
+    margin-top: 20px;
     padding: 20px;
     background-color: #f8f9fa;
     border-radius: 4px;
@@ -108,6 +139,30 @@ h3 {
     margin-top: 20px;
 }
 
+/* Student Info */
+.student-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.student-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 15px;
+    display: block;
+    border: 3px solid #1a73e8;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.student-name {
+    font-size: 1.5em;
+    color: #1a73e8;
+    margin: 0 0 15px;
+    text-align: center;
+}
+
 /* Responsive Design */
 @media (max-width: 480px) {
     .container {
@@ -118,5 +173,15 @@ h3 {
     select,
     button {
         font-size: 14px;
+    }
+
+    .radio-group ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .student-photo {
+        width: 120px;
+        height: 120px;
     }
 }

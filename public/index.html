@@ -12,14 +12,22 @@
     <div class="container">
         <h1>CGPA Calculator</h1>
         <form id="cgpaForm">
-            <div class="form-group">
-                <label for="batch">Select Batch:</label>
-                <select id="batch" required>
-                    <option value="">Select your batch</option>
-                    <option value="2021">2021</option>
-                    <option value="2022">2022</option>
-                    <option value="2023">2023</option>
-                </select>
+            <div class="form-group radio-group">
+                <label class="radio-label">Select Batch:</label>
+                <ul>
+                    <li>
+                        <input type="radio" id="2023" name="batch" value="2023" checked>
+                        <label for="2023">2023 Batch</label>
+                    </li>
+                    <li>
+                        <input type="radio" id="2022" name="batch" value="2022">
+                        <label for="2022">2022 Batch</label>
+                    </li>
+                    <li>
+                        <input type="radio" id="2021" name="batch" value="2021">
+                        <label for="2021">2021 Batch</label>
+                    </li>
+                </ul>
             </div>
             <div class="form-group">
                 <label for="roll">Enter Roll Number:</label>
@@ -34,7 +42,7 @@
         document.getElementById('cgpaForm').addEventListener('submit', async function (event) {
             event.preventDefault();
             const roll = document.getElementById('roll').value;
-            const batch = document.getElementById('batch').value;
+            const batch = document.querySelector('input[name="batch"]:checked').value;
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = "<p>Fetching results...</p>";
 
@@ -49,13 +57,20 @@
                 if (data.error) {
                     resultDiv.innerHTML = `<p class="error">${data.error}</p>`;
                 } else {
-                    let semHTML = `<div class="results">`;
-                    semHTML += `<h3>Results for ${batch} Batch</h3>`;
-                    for (const [sem, sgpa] of Object.entries(data.semResults)) {
-                        semHTML += `<div class="semester"><strong>${sem}</strong>: ${sgpa}</div>`;
+                    let resultHTML = `<div class="student-info">`;
+                    if (data.photoUrl) {
+                        resultHTML += `<img src="${data.photoUrl}" alt="Student Photo" class="student-photo">`;
                     }
-                    semHTML += `</div><h2>CGPA: ${data.cgpa}</h2>`;
-                    resultDiv.innerHTML = semHTML;
+                    if (data.studentName) {
+                        resultHTML += `<h3 class="student-name">${data.studentName}</h3>`;
+                    }
+                    resultHTML += `</div><div class="results">`;
+                    resultHTML += `<h3>Results for ${batch} Batch</h3>`;
+                    for (const [sem, sgpa] of Object.entries(data.semResults)) {
+                        resultHTML += `<div class="semester"><strong>${sem}</strong>: ${sgpa}</div>`;
+                    }
+                    resultHTML += `</div><h2>CGPA: ${data.cgpa}</h2>`;
+                    resultDiv.innerHTML = resultHTML;
                 }
             } catch (error) {
                 resultDiv.innerHTML = `<p class="error">Server error. Try again later.</p>`;

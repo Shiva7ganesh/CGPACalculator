@@ -18,6 +18,7 @@ app.get('/', (req, res) => {
 });
 
 const RESULT_URL = "https://results.cmrithyderabad.edu.in/helper.php?gamaOne=getResult";
+const PHOTO_URL = "https://dhondi.cmrithyderabad.edu.in/sharedfiles/e0d341de643812c29a19aac35b9e7d87/studentPhotos/";
 
 const BATCH_SEMESTERS = {
     "2021": {
@@ -43,15 +44,18 @@ const BATCH_SEMESTERS = {
     }
 };
 
-async function fetchSGPA(roll, resultCode) {
+async function fetchStudentDetails(roll, resultCode) {
     try {
         const params = new URLSearchParams({ hallticket: roll, result: resultCode });
         const response = await axios.post(RESULT_URL, params);
         const $ = cheerio.load(response.data);
-        return $('div[data-title="SGPA"]').first().text().trim() || '-';
+        return {
+            sgpa: $('div[data-title="SGPA"]').first().text().trim() || '-',
+            name: $('div[data-title="Full Name"]').first().text().trim() || '-'
+        };
     } catch (error) {
-        console.error(`Error fetching SGPA: ${error.message}`);
-        return '-';
+        console.error(`Error fetching details: ${error.message}`);
+        return { sgpa: '-', name: '-' };
     }
 }
 
@@ -65,8 +69,14 @@ app.post('/api/calculate', async (req, res) => {
     }
 
     const semResults = {};
+    let studentName = '';
+
     for (const [sem, code] of Object.entries(BATCH_SEMESTERS[batch])) {
-        semResults[sem] = await fetchSGPA(roll, code);
+        const details = await fetchStudentDetails(roll, code);
+        semResults[sem] = details.sgpa;
+        if (!studentName && details.name !== '-') {
+            studentName = details.name;
+        }
     }
 
     let cgpa = "";
@@ -81,7 +91,8 @@ app.post('/api/calculate', async (req, res) => {
         }
     }
 
-    res.json({ roll, batch, semResults, cgpa });
+    const photoUrl = `${PHOTO_URL}${roll}.jpg`;
+    res.json({ roll, batch, studentName, photoUrl, semResults, cgpa });
 });
 
 // Start the server if we're not in a Vercel environment
