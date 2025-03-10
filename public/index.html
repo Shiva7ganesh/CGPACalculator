@@ -6,29 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CGPA Calculator</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
     <div class="container">
         <h1>CGPA Calculator</h1>
         <form id="cgpaForm">
-            <div class="form-group radio-group">
-                <label class="radio-label">Select Batch:</label>
-                <ul>
-                    <li>
-                        <input type="radio" id="2023" name="batch" value="2023" checked>
-                        <label for="2023">2023 Batch</label>
-                    </li>
-                    <li>
-                        <input type="radio" id="2022" name="batch" value="2022">
-                        <label for="2022">2022 Batch</label>
-                    </li>
-                    <li>
-                        <input type="radio" id="2021" name="batch" value="2021">
-                        <label for="2021">2021 Batch</label>
-                    </li>
-                </ul>
-            </div>
             <div class="form-group">
                 <label for="roll">Enter Roll Number:</label>
                 <input type="text" id="roll" placeholder="e.g. 22R01A0501" required>
@@ -36,6 +20,9 @@
             <button type="submit">Calculate</button>
         </form>
         <div id="result"></div>
+        <div class="graph-container">
+            <canvas id="sgpaGraph"></canvas>
+        </div>
     </div>
 
     <script>
@@ -70,10 +57,67 @@
             return canvas.toDataURL();
         }
 
+        function detectBatch(roll) {
+            roll = roll.toUpperCase();
+            if (roll.startsWith('21R01') || roll.startsWith('22R05')) return '2021';
+            if (roll.startsWith('22R01') || roll.startsWith('23R05')) return '2022';
+            if (roll.startsWith('23R01') || roll.startsWith('24R05')) return '2023';
+            return null;
+        }
+
+        function createSGPAGraph(semResults) {
+            const ctx = document.getElementById('sgpaGraph').getContext('2d');
+            const semesters = Object.keys(semResults);
+            const sgpas = Object.values(semResults).map(sgpa => sgpa === '-' ? null : parseFloat(sgpa));
+
+            if (window.sgpaChart) {
+                window.sgpaChart.destroy();
+            }
+
+            window.sgpaChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: semesters,
+                    datasets: [{
+                        label: 'SGPA',
+                        data: sgpas,
+                        borderColor: '#1a73e8',
+                        backgroundColor: 'rgba(26, 115, 232, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 0,
+                            max: 10
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Semester-wise SGPA Performance'
+                        }
+                    }
+                }
+            });
+        }
+
         document.getElementById('cgpaForm').addEventListener('submit', async function (event) {
             event.preventDefault();
-            const roll = document.getElementById('roll').value;
-            const batch = document.querySelector('input[name="batch"]:checked').value;
+            const rollInput = document.getElementById('roll');
+            const roll = rollInput.value.toUpperCase();
+            rollInput.value = roll;
+
+            const batch = detectBatch(roll);
+            if (!batch) {
+                document.getElementById('result').innerHTML = `<p class="error">Invalid roll number format. Please check your roll number.</p>`;
+                return;
+            }
+
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = "<p>Fetching results...</p>";
 
@@ -105,7 +149,7 @@
                     };
 
                     // Try loading through proxy
-                    img.src = `/api/student-photo/${roll}`;
+                    img.src = data.photoUrl;
                     resultHTML += img.outerHTML;
 
                     if (data.studentName) {
@@ -118,6 +162,9 @@
                     }
                     resultHTML += `</div><h2>CGPA: ${data.cgpa}</h2>`;
                     resultDiv.innerHTML = resultHTML;
+
+                    // Create the SGPA graph
+                    createSGPAGraph(data.semResults);
                 }
             } catch (error) {
                 resultDiv.innerHTML = `<p class="error">Server error. Try again later.</p>`;

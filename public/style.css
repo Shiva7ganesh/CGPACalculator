@@ -10,7 +10,7 @@ body {
 
 /* Container */
 .container {
-    max-width: 600px;
+    max-width: 800px;
     margin: 0 auto;
     background-color: white;
     padding: 20px;
@@ -68,18 +68,17 @@ label {
     font-weight: bold;
 }
 
-input,
-select {
+input {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 16px;
     box-sizing: border-box;
+    text-transform: uppercase;
 }
 
-input:focus,
-select:focus {
+input:focus {
     outline: none;
     border-color: #1a73e8;
     box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
@@ -163,6 +162,15 @@ h3 {
     text-align: center;
 }
 
+/* Graph Container */
+.graph-container {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 /* Responsive Design */
 @media (max-width: 480px) {
     .container {
@@ -170,18 +178,16 @@ h3 {
     }
 
     input,
-    select,
     button {
         font-size: 14px;
-    }
-
-    .radio-group ul {
-        flex-direction: column;
-        gap: 10px;
     }
 
     .student-photo {
         width: 120px;
         height: 120px;
+    }
+
+    .graph-container {
+        padding: 10px;
     }
 }
