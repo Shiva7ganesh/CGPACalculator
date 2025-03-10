@@ -29,7 +29,7 @@ async function fetchSGPA(roll, resultCode) {
     }
 }
 
-app.post('/calculate', async (req, res) => {  // ✅ Use relative route, no /api prefix
+app.post('/calculate', async (req, res) => {
     const roll = req.body.roll;
     if (!roll) return res.status(400).json({ error: "Roll number required" });
 
@@ -52,6 +52,5 @@ app.post('/calculate', async (req, res) => {  // ✅ Use relative route, no /api
 
     res.json({ roll, semResults, cgpa });
 });
-
 // ✅ Vercel auto-handles `app.listen()`, so don't add it.
 module.exports = app;

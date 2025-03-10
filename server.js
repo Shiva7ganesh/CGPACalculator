@@ -57,4 +57,11 @@ app.post('/api/calculate', async (req, res) => {
     res.json({ roll, semResults, cgpa });
 });
 
+// Start the server if we're not in a Vercel environment
+if (process.env.VERCEL !== '1') {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}
+
 module.exports = app;

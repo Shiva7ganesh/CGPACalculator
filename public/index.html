@@ -26,22 +26,26 @@
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = "<p>Fetching results...</p>";
 
-            const response = await fetch('/api/calculate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ roll })
-            });
+            try {
+                const response = await fetch('/api/calculate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ roll })
+                });
 
-            const data = await response.json();
-            if (data.error) {
-                resultDiv.innerHTML = `<p class="error">${data.error}</p>`;
-            } else {
-                let semHTML = '<div class="results">';
-                for (const [sem, sgpa] of Object.entries(data.semResults)) {
-                    semHTML += `<div class="semester"><strong>${sem}</strong>: ${sgpa}</div>`;
+                const data = await response.json();
+                if (data.error) {
+                    resultDiv.innerHTML = `<p class="error">${data.error}</p>`;
+                } else {
+                    let semHTML = '<div class="results">';
+                    for (const [sem, sgpa] of Object.entries(data.semResults)) {
+                        semHTML += `<div class="semester"><strong>${sem}</strong>: ${sgpa}</div>`;
+                    }
+                    semHTML += `</div><h2>CGPA: ${data.cgpa}</h2>`;
+                    resultDiv.innerHTML = semHTML;
                 }
-                semHTML += `</div><h2>CGPA: ${data.cgpa}</h2>`;
-                resultDiv.innerHTML = semHTML;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">Server error. Try again later.</p>`;
             }
         });
     </script>
