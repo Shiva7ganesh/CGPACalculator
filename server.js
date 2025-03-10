@@ -18,23 +18,22 @@ app.get('/', (req, res) => {
 });
 
 // Proxy endpoint for student photos
-app.get('/api/student-photo/:rollNumber', async (req, res) => {
-    const rollNumber = req.params.rollNumber;
-    const photoUrl = `${PHOTO_URL}${rollNumber}.jpg`;
+app.get('/api/student-photo/:roll', async (req, res) => {
+    const { roll } = req.params;
+    const photoUrl = `${PHOTO_URL}${roll}.jpg`;
 
     try {
         const response = await axios.get(photoUrl, {
             responseType: 'arraybuffer',
             headers: {
-                'Referer': 'https://results.cmrithyderabad.edu.in/',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                'Referer': 'https://dhondi.cmrithyderabad.edu.in/'
             }
         });
 
         res.set('Content-Type', 'image/jpeg');
         res.send(response.data);
     } catch (error) {
-        // If photo fetch fails, send a default avatar
+        // If there's an error, redirect to the default avatar
         res.redirect('/default-avatar.png');
     }
 });
@@ -113,7 +112,8 @@ app.post('/api/calculate', async (req, res) => {
         }
     }
 
-    const photoUrl = `${PHOTO_URL}${roll}.jpg`;
+    // Update to use the new proxy endpoint
+    const photoUrl = `/api/student-photo/${roll}`;
     res.json({ roll, batch, studentName, photoUrl, semResults, cgpa });
 });
 
