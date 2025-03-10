@@ -2,26 +2,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 20px;
-    background-color: #f0f2f5;
+    background-color: #f4f7fa;
+    color: #333;
+    line-height: 1.6;
 }
 
 /* Container */
 .container {
     max-width: 800px;
     margin: 0 auto;
-    background-color: white;
+    background-color: #fff;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Heading */
 h1 {
     text-align: center;
     color: #1a73e8;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #555;
+    font-size: 0.9em;
     margin-bottom: 30px;
 }
 
@@ -76,6 +91,7 @@ input {
     font-size: 16px;
     box-sizing: border-box;
     text-transform: uppercase;
+    transition: border-color 0.3s ease;
 }
 
 input:focus {
@@ -94,11 +110,12 @@ button {
     border-radius: 4px;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 button:hover {
     background-color: #1557b0;
+    transform: translateY(-2px);
 }
 
 /* Result Box */
@@ -107,6 +124,7 @@ button:hover {
     padding: 20px;
     background-color: #f8f9fa;
     border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .semester {
@@ -169,6 +187,26 @@ h3 {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Advice Section */
+.advice {
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #e8f0fe;
+    border-left: 4px solid #1a73e8;
+    font-style: italic;
+    color: #333;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 10px;
+    background-color: #f4f7fa;
+    color: #555;
+    font-size: 0.9em;
 }
 
 /* Responsive Design */

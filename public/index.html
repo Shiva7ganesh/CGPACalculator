@@ -4,14 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CGPA Calculator</title>
+    <title>CMRIT CGPA Calculator</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
     <div class="container">
-        <h1>CGPA Calculator</h1>
+        <h1>CMRIT CGPA Calculator</h1>
+        <p class="subtitle">Works for 2021, 2022, 2023 batches<br>Last updated on 10-March-2025</p>
         <form id="cgpaForm">
             <div class="form-group">
                 <label for="roll">Enter Roll Number:</label>
@@ -23,7 +24,14 @@
         <div class="graph-container">
             <canvas id="sgpaGraph"></canvas>
         </div>
+        <div class="advice">
+            <p>ADVICE: CGPA does matter. Aim for above 9 to be shortlisted for all companies, or at least 8 to be
+                eligible.</p>
+        </div>
     </div>
+    <footer>
+        <p>Made with purpose by Shiva with the help of GPT</p>
+    </footer>
 
     <script>
         function getInitials(name) {
